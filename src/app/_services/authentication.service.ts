@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class AuthenticationService {
     constructor(private http: HttpClient) { }
+    private loggedIn = new BehaviorSubject<boolean>(false); // {1}
 
+    get isLoggedIn() {
+        return this.loggedIn.asObservable(); // {2}
+    }
     login(username: string, password: string) {
         return this.http.post<any>(`/users/authenticate`, { username: username, password: password })
             .pipe(map(user => {
